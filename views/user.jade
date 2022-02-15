@@ -1,0 +1,25 @@
+extends layout
+block body
+   .container.py-4 
+      .row.justify-content-center 
+         .col-md-10.card.p-4.user-profil
+            span.badge.badge-primary 
+               h2(style="color : #fff;") Profil
+            img.avatar(src="/assets/images/user.png"  width="150" alt="Image Title")
+            h2.text-center.font-weight-bold User65
+            hr
+            .container  
+               form.mt-4(method="POST" action="/update/#{user.id}")
+                  .form-group
+                     label(for='pseudo') Pseudo
+                     input#pseudo.form-control(type='text' name="pseudo" aria-describedby='emailHelp' value="#{user.pseudo}" placeholder='Pseudo')
+                  .form-group
+                     label(for='email') Adresse email
+                     input#email.form-control(type='email' name="email" aria-describedby='emailHelp' value="#{user.email}" placeholder='Entrez votre adresse mail')
+                  .form-group
+                     label(for='lastmdp') Mot de passe
+                     input#lastmdp.form-control(type='password' name="mdp" placeholder='Mot de passe')
+                  .form-group
+                     label(for='newmdp') Confirmation mot de passe
+                     input#newmdp.form-control(type='password' name="mdpverif" placeholder='Mot de passe')
+                  button.btn.btn-primary(type='submit') Modifier

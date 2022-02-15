@@ -1,0 +1,64 @@
+extends layout
+block body
+   .container.py-4  
+      .row.justify-content-center 
+         .col-md-10.card.p-4
+            h2.text-center.font-weight-bold Accueil RedditLink
+         .col-md-10.card.p-4.mt-4 
+            h2 Créez un post ci-dessous:
+            .content.mt-2
+               form(method="POST" action="/home/#{iduser}")
+                  .form-group
+                     label(for='lien') Votre lien
+                     input#lien.form-control(type='text' name="link" aria-describedby='emailHelp' placeholder='Lien')
+                  .form-group
+                     label(for='desc') Votre description
+                     textarea#desc.form-control(style="resize:none;height:80px;" name="desc" placeholder="Votre description ...")
+                  button.btn.btn-primary(type='submit') Créer
+         .col-md-10.card.p-4.mt-4 
+            ul.nav.nav-tabs
+
+               li.nav-item
+                  a.nav-link.active(data-toggle='tab' href='#home') 
+                     h4 Flux
+               li.nav-item
+                  a.nav-link(data-toggle='tab' href='#profile') 
+                     h4 Mes posts
+
+
+            #myTabContent.tab-content
+               #home.tab-pane.fade.active.show
+                  .row 
+                     each item in posts
+                        if (item.id_writter != iduser)
+                           .col-md-10.card.p-4.mt-4.reddit-posts 
+                              .user-posts
+                                 img.avatar(src="/assets/images/user.png" width="50" alt="Image Title")
+                                 h4 #{item.pseudo}
+                              .container 
+                                 a(href="#{item.link}") #{item.link}
+                                 p #{item.content}
+                                 .actions 
+                                    form(method="POST" action="like/#{item.id_posts}/#{iduser}")
+                                       button.btn.btn-success(type='submit')
+                                          span #{item.likes}
+                                          i.fas.fa-thumbs-up
+
+               #profile.tab-pane.fade
+                 .row 
+                     each item in posts
+                        if (item.id_writter == iduser)
+                           .col-md-10.card.p-4.mt-4.reddit-posts 
+                              .user-posts
+                                 img.avatar(src="/assets/images/user.png" width="50" alt="Image Title")
+                                 h4 #{item.pseudo}
+                              .container 
+                                 a(href="#{item.link}") #{item.link}
+                                 p #{item.content}
+                                 .actions 
+                                    form(method="POST" action="like/#{item.id_posts}/#{iduser}")
+                                       button.btn.btn-success(type='submit')
+                                          span #{item.likes}
+                                          i.fas.fa-thumbs-up
+
+               

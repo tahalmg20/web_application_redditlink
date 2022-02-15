@@ -1,0 +1,44 @@
+* {
+   margin : 0px;
+   padding : 0px;
+}
+body{
+   overflow-x: hidden;
+}
+.reddit-posts .avatar{
+   display : block;
+   float : left;
+}
+.user-posts{
+   display : flex;
+}
+.user-posts h4{
+   margin-top: 8px;;
+   margin-left : 20px;
+   font-weight : 800;
+   letter-spacing: 0rem;
+}
+.reddit-posts .container{
+   margin-top : 30px;
+}
+.reddit-posts .container p{
+   margin-top : 20px;
+}
+.reddit-posts .container a{
+   font-weight: 800;
+   color : #1f9bcf !important;
+}
+.reddit-posts .container .btn-danger{
+   margin-left : 15px;
+}
+.reddit-posts .container button i{
+   margin-left : 15px;
+}
+
+/* Profil */
+
+.user-profil .avatar{
+   display: block;
+   margin : 0px auto;
+   border-radius: 50%;
+}

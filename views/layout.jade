@@ -1,0 +1,81 @@
+doctype html
+html(lang="en")
+   head
+      title= "RedditLink"
+      link(href="/css/style.css" rel="stylesheet" type="text/css")
+      link(rel="icon" href="favicon.ico")
+      link(href="/css/bootstrap.min.css" rel="stylesheet" type="text/css")
+      link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css' integrity='sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==' crossorigin='anonymous')
+   body
+
+      // Navbar
+
+      block navbar 
+         nav.navbar.navbar-expand-lg.navbar-dark.bg-primary
+            a.navbar-brand(href='/') RedditLink
+            button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarColor01' aria-controls='navbarColor01' aria-expanded='false' aria-label='Toggle navigation')
+               span.navbar-toggler-icon
+            #navbarColor01.collapse.navbar-collapse
+               ul.navbar-nav.mr-auto
+
+                  if ( navactive == 1)
+                     li.nav-item.active
+                        a.nav-link(href='/accueil') Accueil
+                  else 
+                     li.nav-item
+                        a.nav-link(href='/accueil') Accueil
+
+                  if ( navactive == 2)
+                     li.nav-item.active
+                        a.nav-link(href='/tendances') Tendances
+                  else 
+                     li.nav-item
+                           a.nav-link(href='/tendances') Tendances
+
+
+               if (logged == true)
+
+                  .form-inline.my-2.my-lg-0.mr-6
+                     ul.navbar-nav.mr-auto
+                        li.nav-item.dropdown
+                           a.nav-link.dropdown-toggle(data-toggle='dropdown' href='#' role='button' aria-haspopup='true' aria-expanded='false') Compte
+                           .dropdown-menu
+                              a.dropdown-item(href='/mon-compte') Compte
+                              a.dropdown-item(href='/deconnexion') Déconnexion
+               else 
+                  .form-inline.my-2.my-lg-0.mr-6
+                     ul.navbar-nav.mr-auto      
+                        if ( navactive == 3) 
+                           li.nav-item.active
+                              a.nav-link(href='/login') Connexion
+                        else 
+                           li.nav-item
+                              a.nav-link(href='/login') Connexion
+
+                        if ( navactive == 4) 
+                           li.nav-item.active
+                              a.nav-link(href='/register') Inscription
+                        else 
+                           li.nav-item
+                              a.nav-link(href='/register') Inscription
+
+      // Page content
+
+      block body
+
+      block footer 
+         footer.bg-primary.text-center.text-white
+            // Grid container
+            .container.p-4.pb-0
+               // Section: Social media
+               section.mb-4
+                  h2(style="color: #fff;") RedditLink
+               .text-center.p-3
+                  | © 2021 Copyright :
+                  a.text-white(href='/')  RedditLink
+               // Copyright
+
+
+   script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js' integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo' crossorigin='anonymous')
+   script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js' integrity='sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1' crossorigin='anonymous')
+   script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js' integrity='sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM' crossorigin='anonymous')
