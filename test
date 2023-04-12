@@ -1,0 +1,32 @@
+Risk Identification
+
+Risk 1: Unauthorized access to the VPC and EC2 instances.
+
+Impact: Data leakage, data integrity compromise.
+Probability: Medium.
+Mitigation measures: VPC ACLs, EC2 security groups, VPC flow logs and monitoring, regular updates of EC2 instances.
+Risk 2: Unauthorized access to Lambda functions.
+
+Impact: Data leakage, data integrity compromise.
+Probability: Medium.
+Mitigation measures: Principle of least privilege, IAM policies, AWS X-Ray.
+Risk 3: Unauthorized access to S3 buckets.
+
+Impact: Data leakage, data integrity compromise.
+Probability: High.
+Mitigation measures: Restrict public access, IAM policies, server-side encryption (SSE), access logging.
+Risk 4: Unauthorized access to the ELK Stack.
+
+Impact: Data leakage, data integrity compromise.
+Probability: Medium.
+Mitigation measures: Strong passwords, authentication mechanisms, access management policies.
+Risk 5: Administration protocols (RDP, SSH) exposed directly to the internet.
+
+Impact: Unauthorized access, system compromise.
+Probability: Medium.
+Mitigation measures: Do not expose administration protocols directly to the internet, restrict access to a strictly authenticated and authorized population.
+Risk 6: Unencrypted root EBS volumes on EC2 instances.
+
+Impact: Data leakage, data integrity compromise.
+Probability: Medium.
+Mitigation measures: Encrypt root EBS volumes on all EC2 instances.
