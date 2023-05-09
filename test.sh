@@ -7,21 +7,18 @@ nuke_account() {
   assume_role $ACCOUNT_ID
 
   # Create the aws-nuke config file
-  cat > nuke-config.yml << EOL
----
+  echo "---
 regions:
-- global
-- us-east-1
+  - us-east-1
 
 account-blocklist:
-- 999999999999 # Remplacez cette valeur par l'ID de votre compte principal AWS Organizations
+  - 999999999999
 
 accounts:
   $ACCOUNT_ID:
     filters:
       .*:
-        - .*
-EOL
+        - .*" > nuke-config.yml
 
   # Execute aws-nuke with the config file and check if it succeeds
   if aws-nuke -c nuke-config.yml --no-dry-run; then
