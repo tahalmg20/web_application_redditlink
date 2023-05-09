@@ -58,6 +58,32 @@ list_remaining_resources() {
 }
 
 
+nuke_account() {
+  ACCOUNT_ID=$1
+  assume_role $ACCOUNT_ID
+
+  # Create aws-nuke config file
+  cat > nuke-config.yml << EOL
+---
+regions:
+- us-east-1
+
+account-blacklist:
+- "999999999999" # Replace with your AWS Organizations master account ID
+
+accounts:
+  "$ACCOUNT_ID":
+    filters:
+      ".*":
+        - ".*"
+EOL
+
+  # Execute aws-nuke with the config file
+  aws-nuke -c nuke-config.yml --no-dry-run
+
+  undo_assume
+}
+
 # Create a CSV file and write the header
 CSV_FILE="aws_budgets.csv"
 echo "Account ID,Actual Spent" > $CSV_FILE
