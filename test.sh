@@ -59,6 +59,8 @@ list_remaining_resources() {
 
 #!/bin/bash
 
+#!/bin/bash
+
 # ... (les autres fonctions assume_role et undo_assume restent inchangées) ...
 
 nuke_account() {
@@ -72,7 +74,7 @@ regions:
 - us-east-1
 
 account-blacklist:
-- "999999999999" # Replace with your AWS Organizations master account ID
+  - "999999999999" # Replace with your AWS Organizations master account ID
 
 accounts:
   "$ACCOUNT_ID":
@@ -90,6 +92,7 @@ EOL
 
   undo_assume
 }
+
 
 
 # Create a CSV file and write the header
