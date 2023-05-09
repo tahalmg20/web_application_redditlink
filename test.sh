@@ -1,5 +1,20 @@
 #!/bin/bash
 
+---
+regions:
+- us-east-1
+
+account-blacklist:
+  - "999999999999"
+
+accounts:
+  ACCOUNT_ID_PLACEHOLDER:
+    filters:
+      ".*":
+        - ".*"
+
+
+
 #Assume role (ACCOUNT_ID as parameter)
 assume_team () {
     OUT=$(aws sts assume-role --role-arn arn:aws:iam::034322259089:role/MyOrgaAccountProvRole --role-session-name AWSCLI);
