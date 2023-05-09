@@ -10,10 +10,11 @@ nuke_account() {
   cat > nuke-config.yml << EOL
 ---
 regions:
+- global
 - us-east-1
 
-account-blacklist:
-  - 999999999999 # Replace with your AWS Organizations master account ID
+account-blocklist:
+- 999999999999 # Remplacez cette valeur par l'ID de votre compte principal AWS Organizations
 
 accounts:
   $ACCOUNT_ID:
