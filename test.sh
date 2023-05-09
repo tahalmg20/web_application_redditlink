@@ -61,6 +61,8 @@ list_remaining_resources() {
 
 #!/bin/bash
 
+#!/bin/bash
+
 # ... (les autres fonctions assume_role et undo_assume restent inchangées) ...
 
 nuke_account() {
@@ -68,20 +70,19 @@ nuke_account() {
   assume_role $ACCOUNT_ID
 
   # Create aws-nuke config file
-  cat > nuke-config.yml << EOL
----
+  echo "---
 regions:
 - us-east-1
 
 account-blacklist:
-  - "999999999999" # Replace with your AWS Organizations master account ID
+  - \"999999999999\" # Replace with your AWS Organizations master account ID
 
 accounts:
-  "$ACCOUNT_ID":
+  $ACCOUNT_ID:
     filters:
-      ".*":
-        - ".*"
-EOL
+      \".*\":
+        - \".*\"
+" > nuke-config.yml
 
   # Execute aws-nuke with the config file and check if it succeeds
   if aws-nuke -c nuke-config.yml --no-dry-run; then
@@ -92,7 +93,6 @@ EOL
 
   undo_assume
 }
-
 
 
 # Create a CSV file and write the header
