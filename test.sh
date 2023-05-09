@@ -57,6 +57,9 @@ list_remaining_resources() {
   undo_assume
 }
 
+#!/bin/bash
+
+# ... (les autres fonctions assume_role et undo_assume restent inchangées) ...
 
 nuke_account() {
   ACCOUNT_ID=$1
@@ -78,11 +81,16 @@ accounts:
         - ".*"
 EOL
 
-  # Execute aws-nuke with the config file
-  aws-nuke -c nuke-config.yml --no-dry-run
+  # Execute aws-nuke with the config file and check if it succeeds
+  if aws-nuke -c nuke-config.yml --no-dry-run; then
+    echo "Successfully nuked account: $ACCOUNT_ID"
+  else
+    echo "Failed to nuke account: $ACCOUNT_ID"
+  fi
 
   undo_assume
 }
+
 
 # Create a CSV file and write the header
 CSV_FILE="aws_budgets.csv"
