@@ -137,3 +137,29 @@ empty_s3_bucket() {
   done
 }
 
+
+
+
+# Function to empty an S3 bucket
+empty_s3_bucket() {
+  BUCKET=$1
+
+  # Function to format object keys and versions for batch delete
+  format_delete_objects_input() {
+    jq -r '(.Versions + .DeleteMarkers) | to_entries | map({Key: .value.Key, VersionId: .value.VersionId})'
+  }
+
+  # Delete objects and versions in batches
+  while true; do
+    DELETE_OBJECTS_JSON=$(aws s3api list-object-versions --bucket "$BUCKET" --output json | format_delete_objects_input)
+    OBJECT_COUNT=$(echo "$DELETE_OBJECTS_JSON" | jq length)
+
+    if [ "$OBJECT_COUNT" -eq 0 ]; then
+      break
+    fi
+
+    echo "Deleting $OBJECT_COUNT objects and their versions"
+    aws s3api delete-objects --bucket "$BUCKET" --delete "{\"Objects\": $DELETE_OBJECTS_JSON}"
+  done
+}
+
