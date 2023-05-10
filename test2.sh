@@ -216,3 +216,22 @@ empty_s3_prefix() {
 }
 
 
+
+# Create a random string of length N
+random_string() {
+  LENGTH=$1
+  cat /dev/urandom | tr -dc 'a-z' | fold -w "$LENGTH" | head -n 1
+}
+
+# Create a temporary account alias
+create_temp_alias() {
+  ACCOUNT_ID=$1
+  assume_team $ACCOUNT_ID
+  TEMP_ALIAS="tempalias-$(random_string 10)"
+  echo "Generated alias: $TEMP_ALIAS"
+  aws iam create-account-alias --account-alias "$TEMP_ALIAS"
+  undo_assume
+  echo "$TEMP_ALIAS"
+}
+
+
