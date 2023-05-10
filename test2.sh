@@ -307,3 +307,7 @@ nuke_resources() {
     echo "Resources deleted"
   fi
 }
+
+
+
+echo "$ACCOUNT_ID: $nuke_result" >> "$output_file"
