@@ -107,3 +107,19 @@ delete_remaining_resources() {
 }
 
 
+
+
+empty_s3_bucket() {
+  BUCKET=$1
+  aws s3api list-object-versions --bucket "$BUCKET" --query 'Versions[].{Key:Key,VersionId:VersionId}' --output text | while read -r KEY VERSION_ID; do
+    echo "Deleting $KEY with version $VERSION_ID"
+    aws s3api delete-object --bucket "$BUCKET" --key "$KEY" --version-id "$VERSION_ID"
+  done
+}
+
+
+ 
+        "AWS::S3::Bucket")
+          empty_s3_bucket "$RESOURCE_ID"
+          aws s3api delete-bucket --region "$REGION" --bucket "$RESOURCE_ID"
+          ;;
