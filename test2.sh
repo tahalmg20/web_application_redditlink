@@ -163,3 +163,22 @@ empty_s3_bucket() {
   done
 }
 
+
+
+create_temp_alias() {
+  ACCOUNT_ID=$1
+  assume_team $ACCOUNT_ID
+  TEMP_ALIAS="temp-alias-$ACCOUNT_ID"
+  aws iam create-account-alias --account-alias "$TEMP_ALIAS"
+  undo_assume
+}
+
+#Remove the temporary account alias
+remove_temp_alias() {
+  ACCOUNT_ID=$1
+  assume_team $ACCOUNT_ID
+  TEMP_ALIAS="temp-alias-$ACCOUNT_ID"
+  aws iam delete-account-alias --account-alias "$TEMP_ALIAS"
+  undo_assume
+}
+
