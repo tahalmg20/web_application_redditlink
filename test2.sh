@@ -291,3 +291,19 @@ while read ACCOUNT_ID; do
     echo "$ACCOUNT_ID: Resources deleted" >> "$output_file"
   fi
 done < accounts.txt
+
+
+
+
+nuke_resources() {
+  ACCOUNT_ID=$1
+  assume_team $ACCOUNT_ID
+  nuke_output=$(aws-nuke --config aws-nuke-config.yaml --force --no-dry-run 2>&1)
+  undo_assume
+
+  if echo "$nuke_output" | grep -q "No resource to delete"; then
+    echo "No resource to delete"
+  else
+    echo "Resources deleted"
+  fi
+}
