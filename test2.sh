@@ -165,6 +165,36 @@ empty_s3_bucket() {
 
 
 
+
+
+#!/bin/bash
+
+# ... (Les autres fonctions et configurations du script)
+
+# Fichier de sortie
+output_file="nuke_results.txt"
+
+# Supprimer le fichier de sortie s'il existe déjà
+if [ -f "$output_file" ]; then
+  rm "$output_file"
+fi
+
+while read ACCOUNT_ID; do
+  assume_team "$ACCOUNT_ID"
+  nuke_output=$(aws-nuke --config aws-nuke-config.yaml --force --no-dry-run 2>&1)
+  undo_assume
+  
+  # Vérifier si "No resource to delete" est présent dans la sortie d'aws-nuke
+  if echo "$nuke_output" | grep -q "No resource to delete"; then
+    echo "$ACCOUNT_ID: No resource to delete" >> "$output_file"
+  else
+    echo "$ACCOUNT_ID: Resources deleted" >> "$output_file"
+  fi
+done < accounts.txt
+
+
+
+
 create_temp_alias() {
   ACCOUNT_ID=$1
   assume_team $ACCOUNT_ID
