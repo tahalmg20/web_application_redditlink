@@ -123,3 +123,17 @@ empty_s3_bucket() {
           empty_s3_bucket "$RESOURCE_ID"
           aws s3api delete-bucket --region "$REGION" --bucket "$RESOURCE_ID"
           ;;
+          
+          
+          
+# Function to empty an S3 bucket
+empty_s3_bucket() {
+  BUCKET=$1
+
+  # Delete objects and their versions
+  aws s3api list-object-versions --bucket "$BUCKET" --output json | jq -r '.Versions + .DeleteMarkers | .[] | .Key + " " + .VersionId' | while read -r KEY VERSION_ID; do
+    echo "Deleting $KEY with version $VERSION_ID"
+    aws s3api delete-object --bucket "$BUCKET" --key "$KEY" --version-id "$VERSION_ID"
+  done
+}
+
