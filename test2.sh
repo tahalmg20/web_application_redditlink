@@ -311,3 +311,33 @@ nuke_resources() {
 
 
 echo "$ACCOUNT_ID: $nuke_result" >> "$output_file"
+
+
+
+
+
+list_remaining_resources() {
+  ACCOUNT_ID=$1
+  REGION="us-east-1"
+  RESOURCE_TYPES=(
+    "AWS::EC2::Instance"
+    "AWS::Lambda::Function"
+    "AWS::S3::Bucket"
+    "AWS::EC2::SecurityGroup"
+    "AWS::Logs::LogGroup"
+    "AWS::CloudTrail::Trail"
+    "AWS::SSM::ManagedInstanceInventory"
+  )
+  assume_team $ACCOUNT_ID
+  echo "ID >>>>>>>>> : $ACCOUNT_ID "
+  echo "Region: $REGION"
+  echo "Remaining resources:"
+
+  for RESOURCE_TYPE in "${RESOURCE_TYPES[@]}"; do
+    echo "Resource type: $RESOURCE_TYPE"
+    aws configservice list-discovered-resources --region "$REGION" --resource-type "$RESOURCE_TYPE" --query 'resourceIdentifiers[*].resourceId' --output table
+  done
+
+  undo_assume
+}
+
