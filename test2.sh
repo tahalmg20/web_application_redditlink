@@ -350,3 +350,52 @@ if [ -f "$output_file" ]; then
   rm "$output_file"
 fi
 
+
+
+
+
+#!/bin/bash
+
+# ... (Les autres fonctions et configurations du script)
+
+# Fonction pour lister les ressources restantes
+list_remaining_resources() {
+  ACCOUNT_ID=$1
+  REGION="us-east-1"
+  RESOURCE_TYPES=(
+    "AWS::EC2::Instance"
+    "AWS::Lambda::Function"
+    "AWS::S3::Bucket"
+    "AWS::EC2::SecurityGroup"
+    "AWS::Logs::LogGroup"
+    "AWS::CloudTrail::Trail"
+    "AWS::SSM::ManagedInstanceInventory"
+  )
+
+  assume_team $ACCOUNT_ID
+
+  for RESOURCE_TYPE in "${RESOURCE_TYPES[@]}"; do
+    resource_list=$(aws configservice list-discovered-resources --region "$REGION" --resource-type "$RESOURCE_TYPE" --query 'resourceIdentifiers[*].resourceId' --output text)
+    for resource in $resource_list; do
+      echo "$ACCOUNT_ID,$RESOURCE_TYPE,$resource"
+    done
+  done
+
+  undo_assume
+}
+
+# Fichier de sortie
+output_file="remaining_resources.csv"
+
+# Supprimer le fichier de sortie s'il existe déjà
+if [ -f "$output_file" ]; then
+  rm "$output_file"
+fi
+
+# Écrire les en-têtes de colonnes dans le fichier CSV
+echo "AccountID,ResourceType,ResourceID" >> "$output_file"
+
+while read ACCOUNT_ID; do
+  list_remaining_resources "$ACCOUNT_ID" >> "$output_file"
+done < accounts.txt
+
