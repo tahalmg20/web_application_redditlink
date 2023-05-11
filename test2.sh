@@ -341,3 +341,12 @@ list_remaining_resources() {
   undo_assume
 }
 
+
+
+output_file="remaining_resources.txt"
+
+# Supprimer le fichier de sortie s'il existe déjà
+if [ -f "$output_file" ]; then
+  rm "$output_file"
+fi
+
