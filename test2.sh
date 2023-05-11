@@ -399,3 +399,80 @@ while read ACCOUNT_ID; do
   list_remaining_resources "$ACCOUNT_ID" >> "$output_file"
 done < accounts.txt
 
+
+
+
+#!/bin/bash
+
+# ... (Les autres fonctions et configurations du script)
+
+# Fonction pour lister les ressources restantes
+list_remaining_resources() {
+  ACCOUNT_ID=$1
+  REGION="us-east-1"
+  RESOURCE_TYPES=(
+    "AWS::EC2::Instance"
+    "AWS::Lambda::Function"
+    "AWS::S3::Bucket"
+    "AWS::EC2::SecurityGroup"
+    "AWS::Logs::LogGroup"
+    "AWS::CloudTrail::Trail"
+    "AWS::SSM::ManagedInstanceInventory"
+  )
+
+  assume_team $ACCOUNT_ID
+
+  echo "{ \"AccountID\": \"$ACCOUNT_ID\", \"Resources\": ["
+  
+  isFirstResourceType=true
+  for RESOURCE_TYPE in "${RESOURCE_TYPES[@]}"; do
+    if [ "$isFirstResourceType" = true ] ; then
+      isFirstResourceType=false
+    else
+      echo ","
+    fi
+    echo "{ \"ResourceType\": \"$RESOURCE_TYPE\", \"ResourceIDs\": ["
+    
+    resource_list=$(aws configservice list-discovered-resources --region "$REGION" --resource-type "$RESOURCE_TYPE" --query 'resourceIdentifiers[*].resourceId' --output text)
+    
+    isFirstResource=true
+    for resource in $resource_list; do
+      if [ "$isFirstResource" = true ] ; then
+        isFirstResource=false
+      else
+        echo ","
+      fi
+      echo "\"$resource\""
+    done
+
+    echo "] }"
+  done
+
+  echo "] }"
+
+  undo_assume
+}
+
+# Fichier de sortie
+output_file="remaining_resources.json"
+
+# Supprimer le fichier de sortie s'il existe déjà
+if [ -f "$output_file" ]; then
+  rm "$output_file"
+fi
+
+# Écrire le début du tableau JSON dans le fichier
+echo "[" >> "$output_file"
+
+isFirstAccount=true
+while read ACCOUNT_ID; do
+  if [ "$isFirstAccount" = true ] ; then
+    isFirstAccount=false
+  else
+    echo "," >> "$output_file"
+  fi
+  list_remaining_resources "$ACCOUNT_ID" >> "$output_file"
+done < accounts.txt
+
+# Écrire la fin du tableau JSON dans le fichier
+echo "]" >> "$output_file"
