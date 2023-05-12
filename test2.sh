@@ -490,3 +490,58 @@ aws iam create-user --user-name admin_account
 aws iam create-login-profile --user-name admin_account --password "I&Bk9KVud@@J" --no-password-reset-required
 
 aws iam attach-user-policy --user-name admin_account --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
+
+
+
+#!/bin/bash
+
+# ... (Les autres fonctions et configurations du script)
+
+# Créer un utilisateur IAM
+create_iam_user() {
+    ACCOUNT_ID=$1
+    IAM_USERNAME="admin_account"
+    PASSWORD="I&Bk9KVud@@J"
+    POLICY_ARN="arn:aws:iam::aws:policy/AdministratorAccess"
+    
+    assume_team $ACCOUNT_ID
+
+    # Créer l'utilisateur
+    aws iam create-user --user-name "$IAM_USERNAME"
+    
+    # Configurer un mot de passe pour l'utilisateur
+    aws iam create-login-profile --user-name "$IAM_USERNAME" --password "$PASSWORD" --no-password-reset-required
+
+    # Attacher une politique à l'utilisateur
+    aws iam attach-user-policy --user-name "$IAM_USERNAME" --policy-arn "$POLICY_ARN"
+
+    undo_assume
+}
+
+# Supprimer un utilisateur IAM
+delete_iam_user() {
+    ACCOUNT_ID=$1
+    IAM_USERNAME="admin_account"
+    
+    assume_team $ACCOUNT_ID
+
+    # Supprimer la politique de l'utilisateur
+    aws iam detach-user-policy --user-name "$IAM_USERNAME" --policy-arn "arn:aws:iam::aws:policy/AdministratorAccess"
+
+    # Supprimer le profil de connexion de l'utilisateur
+    aws iam delete-login-profile --user-name "$IAM_USERNAME"
+
+    # Supprimer les clés d'accès de l'utilisateur
+    aws iam list-access-keys --user-name "$IAM_USERNAME" | jq -r ".AccessKeyMetadata[].AccessKeyId" | xargs -I {} aws iam delete-access-key --user-name "$IAM_USERNAME" --access-key-id {}
+
+    # Supprimer l'utilisateur
+    aws iam delete-user --user-name "$IAM_USERNAME"
+
+    undo_assume
+}
+
+while read ACCOUNT_ID; do
+  create_iam_user "$ACCOUNT_ID"
+  # Supprimer la ligne suivante si vous ne voulez pas supprimer l'utilisateur immédiatement
+  # delete_iam_user "$ACCOUNT_ID"
+done < accounts.txt
