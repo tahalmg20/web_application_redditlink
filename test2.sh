@@ -545,3 +545,46 @@ while read ACCOUNT_ID; do
   # Supprimer la ligne suivante si vous ne voulez pas supprimer l'utilisateur immédiatement
   # delete_iam_user "$ACCOUNT_ID"
 done < accounts.txt
+
+list_remaining_resources() {
+  ACCOUNT_ID=$1
+  REGION="us-east-1"
+  RESOURCE_TYPES=(
+    "EC2"
+    "Lambda"
+    "S3"
+    "SecurityGroup"
+    "LogGroup"
+    "CloudTrail"
+  )
+  assume_team $ACCOUNT_ID
+  echo "ID >>>>>>>>> : $ACCOUNT_ID "
+  echo "Region: $REGION"
+  echo "Remaining resources:"
+
+  for RESOURCE_TYPE in "${RESOURCE_TYPES[@]}"; do
+    echo "Resource type: $RESOURCE_TYPE"
+    case $RESOURCE_TYPE in
+    "EC2")
+        aws ec2 describe-instances --query 'Reservations[*].Instances[*].InstanceId' --output text
+        ;;
+    "Lambda")
+        aws lambda list-functions --query 'Functions[*].FunctionName' --output text
+        ;;
+    "S3")
+        aws s3api list-buckets --query 'Buckets[*].Name' --output text
+        ;;
+    "SecurityGroup")
+        aws ec2 describe-security-groups --query 'SecurityGroups[*].GroupName' --output text
+        ;;
+    "LogGroup")
+        aws logs describe-log-groups --query 'logGroups[*].logGroupName' --output text
+        ;;
+    "CloudTrail")
+        aws cloudtrail describe-trails --query 'trailList[*].Name' --output text
+        ;;
+    esac
+  done
+
+  undo_assume
+}
